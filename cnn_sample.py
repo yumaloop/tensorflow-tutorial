@@ -35,7 +35,6 @@ X_test = data_sets.validation.images
 Y_test = data_sets.validation.labels
 
 
-
 tf.logging.set_verbosity(tf.logging.INFO)
 
 validation_metrics = {"accuracy" : MetricSpec(metric_fn = tf.contrib.metrics.streaming_accuracy, prediction_key = "class")}
