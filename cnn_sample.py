@@ -24,7 +24,6 @@ def cnn(x, y):
     prob = slim.softmax(logits)
     loss = slim.losses.softmax_cross_entropy(logits, y)
     train_op = slim.optimize_loss(loss, slim.get_global_step(), learning_rate = 0.001, optimizer = 'Adam')
-
     return {'class': tf.argmax(prob, 1), 'prob': prob}, loss, train_op
 
 
@@ -32,20 +31,15 @@ data_sets = mnist.read_data_sets('/tmp/mnist', one_hot = False)
 
 X_train = data_sets.train.images
 Y_train = data_sets.train.labels
-
 X_test = data_sets.validation.images
 Y_test = data_sets.validation.labels
-
 
 
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
 validation_metrics = {"accuracy" : MetricSpec(metric_fn = tf.contrib.metrics.streaming_accuracy, prediction_key = "class")}
-
 validation_monitor = learn.monitors.ValidationMonitor(X_test, Y_test, metrics = validation_metrics, every_n_steps = 100)
-
-
 
 classifier = learn.Estimator(model_fn = cnn, model_dir = '/tmp/cnn_log', config = learn.RunConfig(save_checkpoints_secs = 10))
 classifier.fit(x = X_train, y = Y_train, steps = 3200, batch_size = 64, monitors = [validation_monitor])
